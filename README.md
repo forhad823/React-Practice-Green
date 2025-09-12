@@ -1,3 +1,9 @@
+# Topics: React + javascript Practice
+
+-react authentication,
+-calculator,
+-Snake Xenzia (currently working on it)
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

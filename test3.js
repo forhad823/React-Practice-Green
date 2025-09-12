@@ -18,4 +18,4 @@ class Truck {
 const truck2 = new Truck();
 // console.log(truck2);
 
-console.log(null + 0);
+console.log(null + 0); 
