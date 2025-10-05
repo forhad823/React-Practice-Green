@@ -1,0 +1,164 @@
+// From now on we will recreate the classic Snake Xenzia game, similar to the old Nokia mobile version; please carefully review the project files and folders — including main.jsx, app.css, the layout folder and its files, and everything inside the Snake Xenzia folder — and note that we may use the React Context API where necessary................................................................................................................... Here is the current code of the purpose.                                                            ----main.jsx---------                                                                                            import { StrictMode } from "react";
+// import { createRoot } from "react-dom/client";
+// import { createBrowserRouter } from "react-router";
+// import { RouterProvider } from "react-router/dom";
+// import "./index.css";
+// import "./App.css";
+// import App from "./App.jsx";
+// import Root from "./layout/Root.jsx";
+
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     Component: Root,
+//     children: [],
+//   },
+// ]);
+// createRoot(document.getElementById("root")).render(
+//   <StrictMode>
+//     <RouterProvider router={router} />
+//   </StrictMode>
+// );                                                                    ------------layout/Root.jsx-------import React from "react";
+// // import Header from "../components/Header/Header";
+// // import { Outlet } from "react-router";
+// // import Calculator from "../components/Calculator/Calculator";
+// import SnakeXen from "../components/Snake Xenzia/SnakeXen";
+
+// const Root = () => {
+//   return (
+//     <>
+//       {/* <Header />
+//       <Outlet /> */}
+//       {/* <Calculator /> */}
+//       <SnakeXen />
+//     </>
+//   );
+// };
+
+// export default Root;                                                 ---------------                         -----------------------------Snake Xenzia-------------------------------                 The file structure is here. Don't respond anything unless i say. i am just feeding you the necessary prerequired information .                                                src/
+//   ├───components/
+//   │   └───Snake Xenzia/
+//   │       ├───Sidebar.jsx
+//   │       ├───SnakeInterface.jsx
+//   │       ├───SnakeXen.jsx
+//   │       ├───SquareBlocks.jsx
+//   │       └───utils.js
+//   │
+//   ├───layout/
+//   │   └───Root.jsx
+//   │
+//   ├───App.css
+//   └───main.jsx
+//   -----------------------------------Sidebar.jsx-------------------------                   import React from "react";
+
+// const Sidebar = () => {
+//   return (
+//     <>
+//       <div>
+//         <ul>
+//           {/* possibly dropdown implementation needed for level(speed) and sounds (on off) */}
+//           <button>New Game</button>
+//           <li>level</li>
+//           {/*Local Storage implementation needed to keep high scores  */}
+//           <li>High Scores</li>
+//           <li>Sounds</li>
+//         </ul>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Sidebar;
+//  ------------------------------SnakeInterface.jsx--------------------------------     import React from "react";
+// import SquareBlocks from "./SquareBlocks";
+// import { obstacleIds } from "./utils";
+
+// const SnakeInterface = () => {
+//   // Generate all IDs first
+//   const ids = [];
+//   for (let i = 97; i < 97 + 16; i++) {// 97 = 'a', run 16 times upto 'p'
+//     let rowLetter = String.fromCharCode(i);
+//     for (let j = 1; j <= 13; j++) {
+//       ids.push(rowLetter + j);// string concatenation
+//     }
+//   }
+//   return (
+//     <div className="w-96 bg-blue-300 border border-transparent rounded-lg">
+//       <header className="text-center font-bold   bg-green-400 text-white text-lg">
+//         score
+//       </header>
+//       <div className="grid grid-cols-13 text-xs font-semibold">
+//         {ids.map((id) =>
+//           obstacleIds.includes(id) ? (
+//             <SquareBlocks key={id} id={id} bgColor={"bg-red-500"} />
+//           ) : (
+//             <SquareBlocks key={id} id={id} bgColor={"bg-blue-300"} />
+//           )
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default SnakeInterface;                                                                              -----------------------------------SnakeXen.jsx------------------------------------import React from "react";
+// import SnakeInterface from "./SnakeInterface";
+// import Sidebar from "./Sidebar";
+
+// const SnakeXen = () => {
+//   return (
+//     <>
+//       <div className="flex gap-2">
+//         {/*.... interface...... */}
+//         <SnakeInterface />
+//         {/*...... side bar... */}
+//         <Sidebar />
+//       </div>
+//     </>
+//   );
+// };
+// export default SnakeXen;
+
+// --------------- utils.js---------------                                  export let obstacleIds = [
+//   "a5",
+//   "b5",
+//   "c5",
+//   "d5",
+//   "e5",
+//   "e6",
+//   "e7",
+//   "e8",
+//   "e9",
+//   "e10",
+//   "e11",
+//   "e12",
+//   "e13",
+//   "l1",
+//   "l2",
+//   "l3",
+//   "l4",
+//   "l5",
+//   "l6",
+//   "l7",
+//   "l8",
+//   "m8",
+//   "n8",
+//   "o8",
+//   "p8",
+// ];
+
+//  ----------------------------------------SquareBlocks.jsx-------------------------import React from "react";
+
+// const SquareBlocks = ({ id, bgColor }) => {
+//   return (
+//     <>
+//       <div
+//         className={`h-[30px] flex items-center justify-center ${bgColor}`}
+//         id={id}
+//       >
+//         {/* {id} */}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default SquareBlocks;

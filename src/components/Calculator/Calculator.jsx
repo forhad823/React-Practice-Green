@@ -38,7 +38,7 @@ const Calculator = () => {
               placeholder={
                 active ? "input number to calculate" : "Press the Clear button"
               }
-              className="bg-black hover:bg-blue-800 text-center text-white w-[95%] h-14 rounded-lg text-xl font-bold "
+              className="bg-black hover:bg-blue-800 text-center text-white w-[95%] h-14 rounded-lg text-xl font-bold"
             ></input>
           </div>
         </div>

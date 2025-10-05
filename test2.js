@@ -31,3 +31,22 @@ fetch("https://jsonplaceholder.typicode.com/users")
   .then((res) => res.json())
   .then((data) => console.log(data))
   .catch((err) => console.log(err));
+
+// ++o   o+++++++ the snake.
+
+/**
+ * initial Gemini prompt for Snake Xenzia.
+ * 
+ * 
+ * Please read the file structure inside the src directory. From now on, we will be working on recreating the classic Snake Xenzia game similar to the old Nokia mobile version. Carefully review the files and folders including main.jsx, app.css, the layout folder and its files, and all files inside the Snake Xenzia folder. Keep in mind that we may use the React Context API if necessary  
+
+ * 
+ */
+
+{
+  Array.from({ length: gridSize }).map((_, i) => (
+    <div key={i} className="w-6 h-6 border text-center">
+      {snake.includes(i) ? (i === snake[snake.length - 1] ? "o" : "+") : ""}
+    </div>
+  ));
+}
