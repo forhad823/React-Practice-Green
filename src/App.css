@@ -94,3 +94,8 @@ body {
 .game-info {
   margin-left: 20px;
 }
+
+.board-wrapper {
+  position: relative;
+  display: inline-block;
+}

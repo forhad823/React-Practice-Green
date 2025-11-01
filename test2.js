@@ -43,10 +43,8 @@ fetch("https://jsonplaceholder.typicode.com/users")
  * 
  */
 
-{
-  Array.from({ length: gridSize }).map((_, i) => (
-    <div key={i} className="w-6 h-6 border text-center">
-      {snake.includes(i) ? (i === snake[snake.length - 1] ? "o" : "+") : ""}
-    </div>
-  ));
-}
+/* Performance optimization: You had to think critically about how to prevent unnecessary re - renders in a project with constant state changes.This might involve techniques like useMemo, useCallback, or even building a custom component to interface with a canvas element.
+  
+Low-level state management: Building a game likely forced you to think beyond standard useState and perhaps implement a more performant state management strategy, like a custom useReducer or integrating with a tool like Zustand.
+ */
+

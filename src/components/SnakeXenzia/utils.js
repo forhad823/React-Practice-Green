@@ -1,4 +1,5 @@
-export let obstacleIds = [
+// src/components/SnakeXenzia/utils.js
+export const obstacleIds = [
   "a4",
   "b4",
   "c4",
@@ -25,24 +26,3 @@ export let obstacleIds = [
   "o7",
   "p7",
 ];
-
-// --------------------------------------
-let snake = [0, 1, 2]; // snake body (head = last element)
-let gridSize = 13; // horizontal width of "board"
-
-export function moveRight() {
-  let oldSnake = [...snake];  
-  for (let i = 0; i < oldSnake.length; i++) {
-    document.getElementById("j" + snake[i]).innerText = ""; // to remove the whole snake from the old place so that it looks like moving.
-  }
-  let head = snake[snake.length - 1]; // last element
-  let newHead = (head + 1) % gridSize; // wrap-around
-  snake.push(newHead); // add new
-  snake.shift(); // remove tail
-  document.getElementById("j" + newHead).innerText = "o"; // set the newHead's element separately
-  for (let i = 0; i < snake.length - 1; i++) {
-    // without head, rest of elements will be set as tails.
-    document.getElementById("j" + snake[i]).innerText = "+";
-  }
-  console.log("snake", snake);
-}

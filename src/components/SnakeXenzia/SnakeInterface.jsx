@@ -1,60 +1,110 @@
-import React, { useEffect, useRef, useState } from "react";
+// src/components/SnakeXenzia/SnakeInterface.jsx
+import React from "react";
+import { useGame } from "./GameContext";
 import SquareBlocks from "./SquareBlocks";
-import { moveRight, obstacleIds } from "./utils";
 
 const SnakeInterface = () => {
-  const [isPaused, setIsPaused] = useState(false);
+  const {
+    ROWS,
+    COLS,
+    TOTAL,
+    snake,
+    head,
+    food,
+    score,
+    running,
+    toggleRunning,
+    startGame,
+    gameOver,
+    resetGame,
+    handleDirectionChange, // ✅ make sure this is defined in GameContext
+  } = useGame();
 
-  // Generate all IDs first
-  const ids = [];
-  for (let i = 97; i < 97 + 16; i++) {
-    // 97 = 'a', run 16 times upto 'p'
-    let rowLetter = String.fromCharCode(i);
-    for (let j = 0; j <= 12; j++) {
-      ids.push(rowLetter + j); // string concatenation
-    }
-  }
-
-  useEffect(() => {
-    if (isPaused) return; // stop running interval
-    console.log("mounted");
-    const intervalId = setInterval(() => {
-      moveRight();
-    }, 100);
-
-    // ------stop interval after 7s to see cleanup----
-    /* const stopId = setTimeout(() => {
-      clearInterval(intervalId);
-    }, 7000); */
-
-    // cleanup when component unmounts
-    return () => {
-      console.log("unmounts , return statement run");
-      clearInterval(intervalId);
-    };
-  }, [isPaused]); // depend on isPaused
+  // create array of indices 0..TOTAL-1
+  const cells = Array.from({ length: TOTAL }, (_, i) => i);
 
   return (
-    <div className="w-96 bg-blue-300 border border-transparent rounded-lg">
-      <header className="flex justify-around items-center text-center font-bold   bg-green-400 text-white text-lg">
-        <button
-          onClick={() => setIsPaused(!isPaused)}
-          className="bg-blue-800 px-2 cursor-pointer"
-        >
-          {isPaused ? "resume" : "pause"}
-        </button>
-        <div>score</div>
+    <div className="w-max bg-blue-100 border border-transparent rounded-lg p-2">
+      {/* Header */}
+      <header className="flex justify-between items-center font-bold bg-green-400 text-white text-lg px-3 py-1 rounded">
+        <div>
+          <button
+            onClick={toggleRunning}
+            className="bg-blue-800 text-white text-sm px-2 py-1 rounded mr-2"
+          >
+            {running ? "Pause" : "Resume"}
+          </button>
+          <button
+            onClick={startGame}
+            className="bg-white text-black px-2 py-1 rounded text-sm"
+          >
+            New Game
+          </button>
+        </div>
+        <div>Score: {score}</div>
       </header>
 
-      <div className="grid grid-cols-13 font-semibold">
-        {ids.map((id) =>
-          obstacleIds.includes(id) ? (
-            <SquareBlocks key={id} id={id} bgColor={"bg-red-500"} />
-          ) : (
-            <SquareBlocks key={id} id={id} bgColor={"bg-blue-300"} />
-          )
-        )}
-      </div>
+      {/* Game board or Game Over overlay */}
+      {!gameOver ? (
+        <>
+          {/* ----Game board----- */}
+          <div
+            className="mt-2 border border-blue-500 board-wrapper relative"
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${COLS}, 20px)`,
+              gridAutoRows: "20px",
+              gap: 0,
+            }}
+          >
+            {cells.map((idx) => (
+              <SquareBlocks key={idx} index={idx} />
+            ))}
+          </div>
+
+          {/* -------Touch Controls------- */}
+          <div className="mt-4 flex flex-col items-center gap-2 select-none">
+            <button
+              onClick={() => handleDirectionChange("UP")}
+              className="bg-gray-700 text-white px-6 py-2 rounded"
+            >
+              ⬆️
+            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={() => handleDirectionChange("LEFT")}
+                className="bg-gray-700 text-white px-6 py-2 rounded"
+              >
+                ⬅️
+              </button>
+              <button
+                onClick={() => handleDirectionChange("DOWN")}
+                className="bg-gray-700 text-white px-6 py-2 rounded"
+              >
+                ⬇️
+              </button>
+              <button
+                onClick={() => handleDirectionChange("RIGHT")}
+                className="bg-gray-700 text-white px-6 py-2 rounded"
+              >
+                ➡️
+              </button>
+            </div>
+          </div>
+        </>
+      ) : (
+        // --Game Over overlay-------
+        <div className="flex flex-col items-center justify-center bg-black bg-opacity-70 text-white text-center mt-2 p-6 rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">Game Over 😢</h2>
+          <p className="mb-4">Score: {score}</p>
+          <button
+            onClick={resetGame}
+            className="px-6 py-2 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600"
+          >
+            Restart
+          </button>
+        </div>
+      )}
     </div>
   );
 };
