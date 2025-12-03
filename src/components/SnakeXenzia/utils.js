@@ -26,3 +26,28 @@ export const obstacleIds = [
   "o7",
   "p7",
 ];
+
+export const ROWS = 16;
+export const COLS = 13;
+export const TOTAL = ROWS * COLS;
+
+export const idToIndex = (id) => {
+  if (!id || id.length < 2) return -1;
+  const rowChar = id[0];
+  const col = parseInt(id.slice(1), 10);
+  if (Number.isNaN(col)) return -1;
+  const rowIndex = rowChar.charCodeAt(0) - 97;
+  return rowIndex * COLS + col;
+};
+
+export const getRandomEmptyIndex = (blockedSet) => {
+  const empties = [];
+  for (let i = 0; i < TOTAL; i++) {
+    if (!blockedSet.has(i)) empties.push(i);
+  }
+  return empties.length
+    ? empties[Math.floor(Math.random() * empties.length)]
+    : null;
+};
+
+export const initialSnake = [108, 109, 110];

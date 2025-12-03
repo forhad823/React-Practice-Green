@@ -1,3 +1,5 @@
+// @ts-check
+
 let list = Array(9).fill("x");
 console.log(list);
 
@@ -47,4 +49,29 @@ fetch("https://jsonplaceholder.typicode.com/users")
   
 Low-level state management: Building a game likely forced you to think beyond standard useState and perhaps implement a more performant state management strategy, like a custom useReducer or integrating with a tool like Zustand.
  */
+
+function compressString(str) {
+  // Validation: only accept string
+  if (typeof str !== "string") {
+    // throw new TypeError("input must be a string");
+    return "input must be a string"; // or throw an error, depending on requirement
+  }
+
+  if (st.length === 0) return "";
+
+  let result = "";
+  let count = 1;
+
+  for (let i = 1; i < str.length; i++) {
+    if (str[i] === str[i - 1]) {
+      count++;
+    } else {
+      result += str[i - 1] + count;
+      count = 1;
+    }
+  }
+
+  result += str[str.length - 1] + count;
+  return result;
+}
 

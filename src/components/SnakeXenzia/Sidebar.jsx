@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useGame } from "./GameContext";
 
 const Sidebar = () => {
-  const { setSpeed, speed, score, resetGame, running } = useGame();
+  const { setSpeed, speed, score, resetGame } = useGame();
   const [high, setHigh] = useState(() =>
     Number(localStorage.getItem("snakeHigh") || 0)
   );

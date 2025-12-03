@@ -5,12 +5,8 @@ import SquareBlocks from "./SquareBlocks";
 
 const SnakeInterface = () => {
   const {
-    ROWS,
     COLS,
     TOTAL,
-    snake,
-    head,
-    food,
     score,
     running,
     toggleRunning,
@@ -20,14 +16,14 @@ const SnakeInterface = () => {
     handleDirectionChange, // ✅ make sure this is defined in GameContext
   } = useGame();
 
+  console.log("SnakeInterface loading");
   // create array of indices 0..TOTAL-1
-  const cells = Array.from({ length: TOTAL }, (_, i) => i);
-
+  const cells = [...Array(TOTAL).keys()]; // uses iterator from keys()
   return (
     <div className="w-max bg-blue-100 border border-transparent rounded-lg p-2">
       {/* Header */}
-      <header className="flex justify-between items-center font-bold bg-green-400 text-white text-lg px-3 py-1 rounded">
-        <div>
+      <header className="flex justify-between items-center font-bold bg-green-400 text-white text-lg px-3 py-1 rounded gap-2">
+        <div className="flex">
           <button
             onClick={toggleRunning}
             className="bg-blue-800 text-white text-sm px-2 py-1 rounded mr-2"
@@ -77,11 +73,12 @@ const SnakeInterface = () => {
               >
                 ⬅️
               </button>
+
               <button
-                onClick={() => handleDirectionChange("DOWN")}
-                className="bg-gray-700 text-white px-6 py-2 rounded"
+                onClick={toggleRunning}
+                className="bg-gray-700 text-white px-6 font-bold py-2 rounded"
               >
-                ⬇️
+                {running ? "Pause" : "Resume"}
               </button>
               <button
                 onClick={() => handleDirectionChange("RIGHT")}
@@ -90,6 +87,12 @@ const SnakeInterface = () => {
                 ➡️
               </button>
             </div>
+            <button
+              onClick={() => handleDirectionChange("DOWN")}
+              className="bg-gray-700 text-white px-6 py-2 rounded"
+            >
+              ⬇️
+            </button>
           </div>
         </>
       ) : (

@@ -29,11 +29,7 @@ const SquareBlocks = ({ index }) => {
   }, [isObstacle, isFood, isHead, isBody]);
 
   return (
-    <div
-      data-index={index}
-      className={`${className}`}
-      style={{ width: 20, height: 20 }}
-    >
+    <div data-index={index} className={`${className}`}>
       {char}
     </div>
   );

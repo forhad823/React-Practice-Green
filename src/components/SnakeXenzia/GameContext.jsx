@@ -7,25 +7,20 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { obstacleIds as obstacleStrings } from "./utils";
+import {
+  obstacleIds as obstacleStrings,
+  ROWS,
+  COLS,
+  TOTAL,
+  getRandomEmptyIndex,
+  idToIndex,
+  initialSnake,
+} from "./utils";
 
 const GameContext = createContext();
 export const useGame = () => useContext(GameContext);
 
 export const GameProvider = ({ children }) => {
-  const ROWS = 16;
-  const COLS = 13;
-  const TOTAL = ROWS * COLS;
-
-  const idToIndex = (id) => {
-    if (!id || id.length < 2) return -1;
-    const rowChar = id[0];
-    const col = parseInt(id.slice(1), 10);
-    if (Number.isNaN(col)) return -1;
-    const rowIndex = rowChar.charCodeAt(0) - 97;
-    return rowIndex * COLS + col;
-  };
-
   const obstacleSet = useMemo(() => {
     const s = new Set();
     obstacleStrings.forEach((id) => {
@@ -34,23 +29,6 @@ export const GameProvider = ({ children }) => {
     });
     return s;
   }, [TOTAL]);
-
-  const getRandomEmptyIndex = (blockedSet) => {
-    const empties = [];
-    for (let i = 0; i < TOTAL; i++) {
-      if (!blockedSet.has(i)) empties.push(i);
-    }
-    return empties.length
-      ? empties[Math.floor(Math.random() * empties.length)]
-      : null;
-  };
-
-  const initialSnake = useMemo(() => {
-    const r = Math.floor(ROWS / 2);
-    const c = Math.floor(COLS / 2);
-    // center three cells horizontally
-    return [r * COLS + (c - 2), r * COLS + (c - 1), r * COLS + c];
-  }, [ROWS, COLS]);
 
   const [snake, setSnake] = useState(initialSnake);
   const [direction, setDirection] = useState("RIGHT");
@@ -65,15 +43,35 @@ export const GameProvider = ({ children }) => {
   const [gameOver, setGameOver] = useState(false);
 
   const [food, setFood] = useState(() => {
-    const blocked = new Set([...initialSnake, ...obstacleSet]);
-    return getRandomEmptyIndex(blocked);
+    const initialBlocked = new Set([...initialSnake, ...obstacleSet]);
+    return getRandomEmptyIndex(initialBlocked);
   });
   const foodRef = useRef(food);
   useEffect(() => {
     foodRef.current = food;
   }, [food]);
 
+  // ______________________________________________
   const intervalRef = useRef(null);
+  // manage moving interval (cleanly)
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (!running) return;
+
+    intervalRef.current = setInterval(() => {
+      step();
+    }, 460 - speed);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [running, speed]);
 
   // NEW: prevent more than one turn between movement ticks
   const lastTurnRef = useRef(false);
@@ -106,6 +104,7 @@ export const GameProvider = ({ children }) => {
 
       // eating food
       if (newHead === foodRef.current) {
+        // Has the snake head touched the food?
         setScore((s) => s + 1);
         const newSnake = [...prevSnake, newHead]; // grow
         const blocked = new Set([...newSnake, ...obstacleSet]);
@@ -138,32 +137,15 @@ export const GameProvider = ({ children }) => {
   };
   const pauseGame = () => setRunning(false);
   const resumeGame = () => setRunning(true);
-  const toggleRunning = () => setRunning((r) => !r);
+  const toggleRunning = () => {
+    if (gameOver) return; // toggle shouldn't work after gameOver.
+    setRunning((r) => !r);
+  };
   const resetGame = () => {
     setRunning(false);
     setGameOver(false);
     setTimeout(() => startGame(), 50);
   };
-
-  // manage moving interval (cleanly)
-  useEffect(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    if (!running) return;
-
-    intervalRef.current = setInterval(() => {
-      step();
-    }, 460 - speed);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [running, speed]);
 
   //------change direction using mouseClick and touch-button---------------
   const handleDirectionChange = (newDirection) => {
@@ -200,12 +182,19 @@ export const GameProvider = ({ children }) => {
       // space toggles pause/resume (always allowed)
       if (e.code === "Space") {
         e.preventDefault();
+        if (gameOver) return;
         setRunning((r) => !r);
         return;
       }
 
       // direction keys should be ignored when paused or game over
       if (!running || gameOver) return;
+
+      // prevent multiple changes between move ticks
+      if (lastTurnRef.current) {
+        e.preventDefault();
+        return;
+      }
 
       const key = String(e.key || "").toLowerCase();
       let newDir = null;
@@ -225,12 +214,6 @@ export const GameProvider = ({ children }) => {
         return;
       }
 
-      // prevent multiple changes between move ticks
-      if (lastTurnRef.current) {
-        e.preventDefault();
-        return;
-      }
-
       lastTurnRef.current = true;
       setDirection(newDir);
       directionRef.current = newDir;
@@ -238,7 +221,10 @@ export const GameProvider = ({ children }) => {
     };
 
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      console.log("event listener removed");
+    };
   }, [running, gameOver]);
 
   const value = {

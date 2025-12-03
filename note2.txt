@@ -1,0 +1,28 @@
+const [food, setFood] = useState(() => {
+    const initialBlocked = new Set([...initialSnake, ...obstacleSet]);
+    return getRandomEmptyIndex(initialBlocked);
+  });
+const foodRef = useRef(food);
+  useEffect(() => {
+    foodRef.current = food;
+  }, [food]);
+
+    // eating food
+      if (newHead === foodRef.current) {// Has the snake head touched the food?
+        setScore((s) => s + 1);
+        const newSnake = [...prevSnake, newHead]; // grow
+        const blocked = new Set([...newSnake, ...obstacleSet]);
+        const nextFood = getRandomEmptyIndex(blocked);
+        setFood(nextFood);
+        // allow next turn after move
+        lastTurnRef.current = false;
+        return newSnake;
+      }
+
+      startGame() => {
+        ..........
+        ........
+        ..........
+        const blocked = new Set([...initialSnake, ...obstacleSet]);
+    setFood(getRandomEmptyIndex(blocked));
+      }
