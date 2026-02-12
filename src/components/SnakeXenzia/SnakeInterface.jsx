@@ -16,7 +16,6 @@ const SnakeInterface = () => {
     handleDirectionChange, // ✅ make sure this is defined in GameContext
   } = useGame();
 
-  console.log("SnakeInterface loading");
   // create array of indices 0..TOTAL-1
   const cells = [...Array(TOTAL).keys()]; // uses iterator from keys()
   return (

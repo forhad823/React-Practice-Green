@@ -1,5 +1,5 @@
 // src/components/SnakeXenzia/SquareBlocks.jsx
-import React, { useMemo } from "react";
+import React from "react";
 import { useGame } from "./GameContext";
 
 /*
@@ -20,13 +20,17 @@ const SquareBlocks = ({ index }) => {
   // classes - keep minimal; you can style further
   const base = "flex items-center justify-center text-center text-sm";
 
-  const className = useMemo(() => {
-    if (isObstacle) return `${base} bg-red-500`;
-    if (isFood) return `${base} bg-yellow-300`;
-    if (isHead) return `${base} bg-green-700 text-white`;
-    if (isBody) return `${base} bg-green-500 text-white`;
-    return `${base} bg-blue-200`;
-  }, [isObstacle, isFood, isHead, isBody]);
+  let className = `${base} bg-blue-200`; // default: empty cell
+
+  if (isObstacle) {
+    className = `${base} bg-red-500`;
+  } else if (isFood) {
+    className = `${base} bg-yellow-300`;
+  } else if (isHead) {
+    className = `${base} bg-green-700 text-white`;
+  } else if (isBody) {
+    className = `${base} bg-green-500 text-white`;
+  }
 
   return (
     <div data-index={index} className={`${className}`}>

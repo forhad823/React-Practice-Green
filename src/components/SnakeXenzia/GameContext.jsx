@@ -28,9 +28,10 @@ export const GameProvider = ({ children }) => {
       if (idx >= 0 && idx < TOTAL) s.add(idx);
     });
     return s;
-  }, [TOTAL]);
+  }, []);
 
   const [snake, setSnake] = useState(initialSnake);
+
   const [direction, setDirection] = useState("RIGHT");
   const directionRef = useRef(direction);
   useEffect(() => {
@@ -71,55 +72,92 @@ export const GameProvider = ({ children }) => {
         intervalRef.current = null;
       }
     };
+    // @see @DOC_SNAKE_USEEFFECT_INTERVAL in ../DocumentationSnake.js
   }, [running, speed]);
 
   // NEW: prevent more than one turn between movement ticks
   const lastTurnRef = useRef(false);
 
-  // step: move one tick depending on directionRef.current
   const step = () => {
+    // {note-2: see DocumentationSnake.js}
     setSnake((prevSnake) => {
-      if (!prevSnake || prevSnake.length === 0) return prevSnake;
-      const head = prevSnake[prevSnake.length - 1];
-      const r = Math.floor(head / COLS);
-      const c = head % COLS;
-
-      let nr = r;
-      let nc = c;
-
-      const dir = directionRef.current;
-      if (dir === "RIGHT") nc = (c + 1) % COLS;
-      else if (dir === "LEFT") nc = (c - 1 + COLS) % COLS;
-      else if (dir === "UP") nr = (r - 1 + ROWS) % ROWS;
-      else if (dir === "DOWN") nr = (r + 1) % ROWS;
-
-      const newHead = nr * COLS + nc;
-
-      // collision detection
-      if (obstacleSet.has(newHead) || prevSnake.includes(newHead)) {
-        setRunning(false);
-        setGameOver(true);
+      if (!prevSnake || prevSnake.length === 0) {
         return prevSnake;
       }
+      // Get current head position (last element)
+      const currentHeadIndex = prevSnake[prevSnake.length - 1];
 
-      // eating food
-      if (newHead === foodRef.current) {
-        // Has the snake head touched the food?
-        setScore((s) => s + 1);
-        const newSnake = [...prevSnake, newHead]; // grow
-        const blocked = new Set([...newSnake, ...obstacleSet]);
-        const nextFood = getRandomEmptyIndex(blocked);
-        setFood(nextFood);
-        // allow next turn after move
-        lastTurnRef.current = false;
-        return newSnake;
+      // Convert 1D index → 2D grid position
+      const currentRow = Math.floor(currentHeadIndex / COLS);
+      const currentCol = currentHeadIndex % COLS;
+
+      /* ----------------------------------------
+        Calculate next position based on direction
+       ---------------------------------------- */
+      let nextRow = currentRow;
+      let nextCol = currentCol;
+
+      const direction = directionRef.current;
+
+      switch (direction) {
+        case "RIGHT":
+          nextCol = (currentCol + 1) % COLS;
+          break;
+        case "LEFT":
+          nextCol = (currentCol - 1 + COLS) % COLS;
+          break;
+        case "UP":
+          nextRow = (currentRow - 1 + ROWS) % ROWS;
+          break;
+        case "DOWN":
+          nextRow = (currentRow + 1) % ROWS;
+          break;
       }
 
-      // normal move (push head, shift tail)
-      const moved = [...prevSnake.slice(1), newHead];
-      // allow next turn after move
+      // Convert 2D position back to 1D index
+      const nextHeadIndex = nextRow * COLS + nextCol;
+
+      /* ---------------------------------
+         Collision detection
+       --------------------------------- */
+      const hitObstacle = obstacleSet.has(nextHeadIndex);
+      const hitSelf = prevSnake.includes(nextHeadIndex);
+
+      if (hitObstacle || hitSelf) {
+        setRunning(false);
+        setGameOver(true);
+        return prevSnake; // stop movement
+      }
+
+      /* --------------------------------
+        Food eating logic
+       -------------------------------- */
+      if (nextHeadIndex === foodRef.current) {
+        setScore((prev) => prev + 1);
+
+        // Grow snake (do NOT remove tail)
+        const grownSnake = [...prevSnake, nextHeadIndex];
+
+        // Generate new food position
+        const blockedCells = new Set([...grownSnake, ...obstacleSet]);
+        const newFoodIndex = getRandomEmptyIndex(blockedCells);
+        setFood(newFoodIndex);
+
+        // Allow direction change in next tick
+        lastTurnRef.current = false;
+
+        return grownSnake;
+      }
+
+      /* --------------------------------
+         Normal movement (move forward)
+       -------------------------------- */
+      const movedSnake = [...prevSnake.slice(1), nextHeadIndex];
+
+      // Allow direction change in next tick
       lastTurnRef.current = false;
-      return moved;
+
+      return movedSnake;
     });
   };
 
@@ -144,7 +182,7 @@ export const GameProvider = ({ children }) => {
   const resetGame = () => {
     setRunning(false);
     setGameOver(false);
-    setTimeout(() => startGame(), 50);
+    setTimeout(() => startGame(), 50); // defensive programming. {see note-3 in doc}
   };
 
   //------change direction using mouseClick and touch-button---------------

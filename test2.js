@@ -57,7 +57,7 @@ function compressString(str) {
     return "input must be a string"; // or throw an error, depending on requirement
   }
 
-  if (st.length === 0) return "";
+  if (str.length === 0) return "";
 
   let result = "";
   let count = 1;
