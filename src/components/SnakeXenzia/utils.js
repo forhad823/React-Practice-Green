@@ -31,7 +31,8 @@ export const ROWS = 16;
 export const COLS = 13;
 export const TOTAL = ROWS * COLS;
 
-export const idToIndex = (id) => {
+const idToIndex = (id) => {
+  console.log("idToIndex runned");
   if (!id || id.length < 2) return -1;
   const rowChar = id[0];
   const col = parseInt(id.slice(1), 10);
@@ -39,6 +40,21 @@ export const idToIndex = (id) => {
   const rowIndex = rowChar.charCodeAt(0) - 97;
   return rowIndex * COLS + col;
 };
+
+/**
+ * ---------------------------
+ * Helper: build obstacle set
+ * ---------------------------
+ */
+const makeObstacleSet = () => {
+  const s = new Set();
+  obstacleIds.forEach((id) => {
+    const idx = idToIndex(id);
+    if (idx >= 0 && idx < TOTAL) s.add(idx);
+  });
+  return s;
+};
+export const obstacleSetStatic = makeObstacleSet(); // stable across provider mounts
 
 export const getRandomEmptyIndex = (blockedSet) => {
   const empties = [];

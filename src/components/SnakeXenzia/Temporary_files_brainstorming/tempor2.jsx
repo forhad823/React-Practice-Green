@@ -1,3 +1,64 @@
+/* Full syntax of useReducer Hook */
+import { useReducer } from "react";
+// official syntax
+// const [state, dispatch] = useReducer(reducer, initialArg, init ?)
+/* Full Structure Overview
+      ----- main parts: ---------
+      Initial state
+      Reducer function
+      useReducer call
+      Dispatching actions 
+*/
+
+import { useReducer } from "react";
+
+const initialState = { count: 0 };
+
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "INCREMENT":
+      return { count: state.count + 1 };
+
+    case "DECREMENT":
+      return { count: state.count - 1 };
+
+    case "RESET":
+      return initialState;
+
+    default:
+      return state;
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState); // memorize this syntax
+
+  return (
+    <>
+      <p>{state.count}</p>
+
+      <button onClick={() => dispatch({ type: "INCREMENT" })}>+</button>
+
+      <button onClick={() => dispatch({ type: "DECREMENT" })}>-</button>
+
+      <button onClick={() => dispatch({ type: "RESET" })}>Reset</button>
+    </>
+  );
+}
+
+/* Third Argument (Lazy Initialization)
+Advanced syntax: */
+const [state, dispatch] = useReducer(reducer, initialArg, initFunction);
+//example
+/* 
+function init(initialValue) {
+  return { count: initialValue };
+}
+const [state, dispatch] = useReducer(reducer, 10, init); 
+*/
+
+
 // -----------same code in useReducer logic----------------
 
 import { useReducer } from "react";
@@ -70,4 +131,3 @@ const Post = () => {
 };
 
 export default Post;
-

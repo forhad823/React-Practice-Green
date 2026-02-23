@@ -15,7 +15,6 @@ const SnakeInterface = () => {
     resetGame,
     handleDirectionChange, // ✅ make sure this is defined in GameContext
   } = useGame();
-
   // create array of indices 0..TOTAL-1
   const cells = [...Array(TOTAL).keys()]; // uses iterator from keys()
   return (
@@ -44,7 +43,7 @@ const SnakeInterface = () => {
         <>
           {/* ----Game board----- */}
           <div
-            className="mt-2 border border-blue-500 board-wrapper relative"
+            className="mt-2 border border-blue-500 relative"
             style={{
               display: "grid",
               gridTemplateColumns: `repeat(${COLS}, 20px)`,

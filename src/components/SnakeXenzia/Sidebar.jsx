@@ -5,7 +5,7 @@ import { useGame } from "./GameContext";
 const Sidebar = () => {
   const { setSpeed, speed, score, resetGame } = useGame();
   const [high, setHigh] = useState(() =>
-    Number(localStorage.getItem("snakeHigh") || 0)
+    Number(localStorage.getItem("snakeHigh") || 0),
   );
 
   useEffect(() => {
@@ -33,8 +33,8 @@ const Sidebar = () => {
         <label className="block mb-1 font-semibold">Speed (ms): {speed}</label>
         <input
           type="range"
-          min="60"
-          max="400"
+          min="11"
+          max="100"
           value={speed}
           onChange={(e) => setSpeed(Number(e.target.value))}
         />
