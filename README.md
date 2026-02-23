@@ -1,8 +1,9 @@
 # Topics: React + javascript Practice
 
--react authentication,
--calculator,
--Snake Xenzia (currently working on it)
+-react authentication, /n
+-calculator,  \n
+-Snake Xenzia - (useReducer used) (some work needed) \n
+-Form
 
 # React + Vite
 
